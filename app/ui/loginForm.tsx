@@ -11,16 +11,15 @@ function LoginForm() {
     undefined,
   );
 
-  console.log(errorMessage);
   return (
     <form
-      className="mt-3 bg-stone-100 px-4 py-6 w-full rounded-xl"
+      className="mt-3 bg-stone-100 px-4 py-6 w-full min-w-0 rounded-xl"
       action={formAction}
     >
       {errorMessage && (
-        <div className="bg-red-100 p-4 rounded-2xl my-3 flex gap-x-3 text-red-700 items-center">
-          <MdErrorOutline className="text-xl" />
-          <p>{errorMessage}</p>
+        <div className="bg-red-100 p-3 min-[400px]:p-4 rounded-2xl my-3 flex flex-wrap gap-3 text-red-700 items-center">
+          <MdErrorOutline className="text-xl shrink-0" />
+          <p className="min-w-0 flex-1 wrap-break-words">{errorMessage}</p>
         </div>
       )}
 
@@ -28,8 +27,9 @@ function LoginForm() {
         <label className="text-lg text-stone-500 font-semibold" htmlFor="email">
           Email:
         </label>
+
         <input
-          className="bg-white mt-2 p-2 rounded-xl text-teal-800"
+          className="w-full min-w-0 box-border bg-white mt-2 p-2 rounded-xl text-teal-800"
           type="email"
           id="email"
           name="email"
@@ -43,14 +43,16 @@ function LoginForm() {
         >
           Password:
         </label>
+
         <input
-          className="bg-white mt-2 p-2 rounded-xl text-teal-800"
+          className="w-full min-w-0 box-border bg-white mt-2 p-2 rounded-xl text-teal-800"
           type="password"
           id="password"
           name="password"
           aria-describedby=""
         />
       </div>
+
       <Button button={true} disabeld={pending} href="/" AddClass="">
         {pending ? "Loginning In" : "Log In"}
       </Button>

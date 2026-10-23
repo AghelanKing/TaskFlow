@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import SideNav from "../../ui/dashboard/SideNav";
 
-export default async function layout({
+export default async function Layout({
   children,
   params,
 }: {
@@ -9,11 +9,14 @@ export default async function layout({
   params: Promise<{ projectId: string }>;
 }) {
   return (
-    <div className="w-full h-full flex items-center py-4">
+    <div className="w-full min-h-screen flex flex-col lg:flex-row items-stretch gap-3 p-3 sm:p-4">
       <Suspense>
         <SideNav params={params} />
       </Suspense>
-      <div className="w-[80%] h-full  overflow-auto">{children}</div>
+
+      <div className="w-full min-w-0 lg:w-[80%] lg:flex-1 lg:min-h-0 lg:overflow-auto">
+        {children}
+      </div>
     </div>
   );
 }

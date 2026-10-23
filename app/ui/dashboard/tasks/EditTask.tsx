@@ -4,13 +4,11 @@ import { User } from "@/app/lib/definitions";
 import Button from "../../Button";
 import { PiUserCircleCheckFill } from "react-icons/pi";
 import { SiGoogletasks } from "react-icons/si";
-import { MdOutlineDescription } from "react-icons/md";
+import { MdOutlineDescription, MdErrorOutline } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import { LuCalendar } from "react-icons/lu";
-import { useActionState } from "react";
-import { MdErrorOutline } from "react-icons/md";
 import {
   editTask,
   StateTask,
@@ -41,116 +39,149 @@ function EditTask({
   isUser: boolean;
   task: TaskWithId[];
 }) {
-  const { title, description, due_date, priority, status, userid }: TaskWithId =
-    task[0];
-  const taskId = task[0]?.id;
+  const initialState: StateTask = { message: null, errors: {} };
+  const { title, description, due_date, priority, status, userid } = task[0];
   const [dueDate, setDueDate] = useState<Date | null>(due_date ?? null);
-
-  const EditTaskWithParams = editTask.bind(
+  const taskId = task[0].id;
+  const editTaskWithParams = editTask.bind(
     null,
     projectId,
     taskId,
     isOwner,
     isUser,
   );
-  const initialState: StateTask = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(
-    EditTaskWithParams,
+    editTaskWithParams,
     initialState,
   );
 
+  if (!task.length) {
+    return (
+      <div className="mt-6 w-full rounded-2xl bg-stone-50 p-4 text-stone-500">
+        Task not found.
+      </div>
+    );
+  }
+
   return (
-    <form className="bg-stone-50 p-3 rounded-2xl mt-6" action={formAction}>
+    <form
+      className="mt-5 sm:mt-6 w-full min-w-0 rounded-2xl bg-stone-50 p-3 min-[400px]:p-4 sm:p-5"
+      action={formAction}
+    >
       {state.message && (
-        <div className="bg-red-100 p-4 rounded-2xl my-3 flex gap-x-3 text-red-700 items-center">
-          <MdErrorOutline className="text-xl" />
-          <p>{state.message}</p>
+        <div className="my-3 flex min-w-0 items-start gap-3 rounded-2xl bg-red-100 p-3 sm:p-4 text-red-700">
+          <MdErrorOutline className="mt-0.5 shrink-0 text-xl" />
+          <p className="min-w-0 wrap-break-word">{state.message}</p>
         </div>
       )}
 
-      <div className="flex flex-col mt-5 mb-7 relative">
-        <label className="text-lg text-stone-500 font-semibold" htmlFor="users">
+      {/* Choose user */}
+      <div className="relative mt-5 mb-7 flex min-w-0 flex-col">
+        <label
+          className="text-base sm:text-lg font-semibold text-stone-500"
+          htmlFor="users"
+        >
           Choose a user:
         </label>
-        <PiUserCircleCheckFill className="absolute top-[60%] left-1.5 text-xl text-teal-500" />
+
+        <PiUserCircleCheckFill className="pointer-events-none absolute left-1.5 top-[60%] z-10 text-xl text-teal-500" />
+
         <select
           id="users"
           name="userId"
           defaultValue={userid}
           aria-describedby="customer-error"
-          className="bg-white border border-teal-600 mt-2 py-2 px-6.5 rounded-xl text-teal-800 focus:outline-teal-400"
+          className="box-border mt-2 w-full min-w-0 rounded-xl border border-teal-600 bg-white py-2 pl-8 pr-3 text-teal-800 focus:outline-teal-400"
         >
           <option value="" disabled>
             Select a customer
           </option>
+
           {users.map((user) => (
             <option key={user.id} value={user.id}>
               {user.name}
             </option>
           ))}
         </select>
-        {state?.errors?.userId &&
-          state?.errors.userId.map((error) => (
-            <p key={error} className="mt-2 text-red-700 text-sm">
-              {error}
-            </p>
-          ))}
+
+        {state?.errors?.userId?.map((error) => (
+          <p key={error} className="mt-2 wrap-break-word text-sm text-red-700">
+            {error}
+          </p>
+        ))}
       </div>
 
-      <div className="flex flex-col mt-5 mb-7 relative">
-        <label className="text-lg text-stone-500 font-semibold" htmlFor="title">
+      {/* Task title */}
+      <div className="relative mt-5 mb-7 flex min-w-0 flex-col">
+        <label
+          className="text-base sm:text-lg font-semibold text-stone-500"
+          htmlFor="title"
+        >
           Task Title:
         </label>
+
         <SiGoogletasks
-          className={`absolute top-[60%] left-1.5 text-xl text-teal-500 ${state?.errors?.title ? "top-[45%]!" : ""}`}
+          className={`pointer-events-none absolute left-1.5 z-10 text-xl text-teal-500 ${
+            state?.errors?.title ? "top-[47%]" : "top-[60%]"
+          }`}
         />
+
         <input
-          className="bg-white border border-teal-600 mt-2 py-2 px-8 rounded-xl text-teal-800 focus:outline-teal-400"
+          className="box-border mt-2 w-full min-w-0 rounded-xl border border-teal-600 bg-white py-2 pl-8 pr-3 text-teal-800 focus:outline-teal-400"
           type="text"
           id="title"
           name="title"
           defaultValue={title}
         />
-        {state?.errors?.title &&
-          state?.errors.title.map((error) => (
-            <p key={error} className="mt-2 text-red-700 text-sm">
-              {error}
-            </p>
-          ))}
+
+        {state?.errors?.title?.map((error) => (
+          <p key={error} className="mt-2 wrap-break-word text-sm text-red-700">
+            {error}
+          </p>
+        ))}
       </div>
 
-      <div className="flex flex-col mt-5 mb-7 relative">
+      {/* Description */}
+      <div className="relative mt-5 mb-7 flex min-w-0 flex-col">
         <label
-          className="text-lg text-stone-500 font-semibold"
+          className="text-base sm:text-lg font-semibold text-stone-500"
           htmlFor="description"
         >
           Task Description:
         </label>
-        <MdOutlineDescription className="absolute top-[46%] left-1.5 text-xl text-teal-500" />
+
+        <MdOutlineDescription className="pointer-events-none absolute left-1.5 top-[46%] z-10 text-xl text-teal-500" />
+
         <textarea
-          className="bg-white border border-teal-600 mt-2 py-2 px-8 rounded-xl text-teal-800 focus:outline-teal-400"
+          className="box-border mt-2 min-h-28 w-full min-w-0 resize-y rounded-xl border border-teal-600 bg-white py-2 pl-8 pr-3 text-teal-800 focus:outline-teal-400"
           id="description"
           name="description"
-          aria-describedby=""
           defaultValue={description}
-        ></textarea>
+        />
       </div>
-      <div className="flex flex-col mt-5 mb-7 relative">
+
+      {/* Due date */}
+      <div className="relative mt-5 mb-7 flex min-w-0 flex-col">
         <label
-          className="text-lg text-stone-500 font-semibold"
-          htmlFor="due_date"
+          className="text-base sm:text-lg font-semibold text-stone-500"
+          htmlFor="due_date_picker"
         >
           Choose a Due date:
         </label>
-        <LuCalendar className="absolute top-[60%] z-10 left-1.5 text-xl text-teal-500" />
+
+        <LuCalendar className="pointer-events-none absolute left-1.5 top-[60%] z-10 text-xl text-teal-500" />
+
         <DatePicker
+          id="due_date_picker"
           selected={dueDate}
           onChange={(date: Date | null) => setDueDate(date)}
           minDate={new Date()}
           dateFormat="yyyy-MM-dd"
           isClearable
-          className="bg-white border border-teal-600 mt-2 py-2 px-8 rounded-xl text-teal-800 focus:outline-teal-400 w-full"
+          wrapperClassName="mt-2 w-full min-w-0"
+          className="box-border w-full min-w-0 rounded-xl border border-teal-600 bg-white py-2 pl-8 pr-3 text-teal-800 focus:outline-teal-400"
         />
+
         <input
           type="hidden"
           name="due_date"
@@ -162,139 +193,160 @@ function EditTask({
         />
       </div>
 
-      <div className="bg-white p-2 rounded-2xl flex gap-x-4 items-center">
-        <h4 className="text-lg text-stone-500 font-semibold">Set priority:</h4>
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="low"
-            name="priority"
-            type="radio"
-            value="low"
-            aria-describedby="priority-error"
-            defaultChecked={priority === "low"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-blue-50 bg-blue-500 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="low"
-          >
-            low
-          </label>
+      {/* Priority */}
+      <div className="min-w-0 rounded-2xl bg-white p-3 sm:p-4">
+        <h4 className="mb-3 text-base sm:text-lg font-semibold text-stone-500">
+          Set priority:
+        </h4>
+
+        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="low"
+              name="priority"
+              type="radio"
+              value="low"
+              aria-describedby="priority-error"
+              defaultChecked={priority === "low"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-blue-500 px-3 py-0.5 text-base sm:text-lg font-semibold text-blue-50"
+              htmlFor="low"
+            >
+              low
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="medium"
+              name="priority"
+              type="radio"
+              value="medium"
+              aria-describedby="priority-error"
+              defaultChecked={priority === "medium"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-green-600 px-3 py-0.5 text-base sm:text-lg font-semibold text-green-50"
+              htmlFor="medium"
+            >
+              medium
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="high"
+              name="priority"
+              type="radio"
+              value="high"
+              aria-describedby="priority-error"
+              defaultChecked={priority === "high"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-red-700 px-3 py-0.5 text-base sm:text-lg font-semibold text-red-50"
+              htmlFor="high"
+            >
+              high
+            </label>
+          </div>
         </div>
 
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="medium"
-            name="priority"
-            type="radio"
-            value="medium"
-            aria-describedby="priority-error"
-            defaultChecked={priority === "medium"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-green-50 bg-green-600 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="medium"
-          >
-            medium
-          </label>
-        </div>
-
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="high"
-            name="priority"
-            type="radio"
-            value="high"
-            aria-describedby="priority-error"
-            defaultChecked={priority === "high"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-red-50 bg-red-700 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="high"
-          >
-            high
-          </label>
-        </div>
-      </div>
-      <div id="priority-error" aria-live="polite">
-        {state?.errors?.priority &&
-          state?.errors.priority.map((error) => (
-            <p key={error} className="mt-2 text-red-700 text-sm">
+        <div id="priority-error" aria-live="polite">
+          {state?.errors?.priority?.map((error) => (
+            <p
+              key={error}
+              className="mt-2 wrap-break-word text-sm text-red-700"
+            >
               {error}
             </p>
           ))}
-      </div>
-
-      <div className="bg-white p-2 rounded-2xl flex gap-x-4 items-center">
-        <h4 className="text-lg text-stone-500 font-semibold">Set status:</h4>
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="todo"
-            name="status"
-            type="radio"
-            value="todo"
-            aria-describedby="priority-error"
-            defaultChecked={status === "todo"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-red-700 bg-red-100 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="todo"
-          >
-            todo
-          </label>
-        </div>
-
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="in_progress"
-            name="status"
-            type="radio"
-            value="in_progress"
-            aria-describedby="priority-error"
-            defaultChecked={status === "in_progress"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-orange-700 bg-orange-200 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="in_progress"
-          >
-            in progress
-          </label>
-        </div>
-
-        <div className="flex items-center gap-x-2 p-1 border border-stone-600 rounded-2xl">
-          <input
-            id="done"
-            name="status"
-            type="radio"
-            value="done"
-            aria-describedby="priority-error"
-            defaultChecked={status === "done"}
-            className="h-4 w-4 cursor-pointer accent-teal-700"
-          />
-          <label
-            className="text-lg text-green-700 bg-green-200 py-0.5 px-3 rounded-full font-semibold"
-            htmlFor="done"
-          >
-            done
-          </label>
         </div>
       </div>
-      <div id="priority-error" aria-live="polite">
-        {state?.errors?.status &&
-          state?.errors.status.map((error) => (
-            <p key={error} className="mt-2 text-red-700 text-sm">
+
+      {/* Status */}
+      <div className="mt-4 min-w-0 rounded-2xl bg-white p-3 sm:p-4">
+        <h4 className="mb-3 text-base sm:text-lg font-semibold text-stone-500">
+          Set status:
+        </h4>
+
+        <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="todo"
+              name="status"
+              type="radio"
+              value="todo"
+              aria-describedby="status-error"
+              defaultChecked={status === "todo"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-red-100 px-3 py-0.5 text-base sm:text-lg font-semibold text-red-700"
+              htmlFor="todo"
+            >
+              todo
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="in_progress"
+              name="status"
+              type="radio"
+              value="in_progress"
+              aria-describedby="status-error"
+              defaultChecked={status === "in_progress"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-orange-200 px-3 py-0.5 text-base sm:text-lg font-semibold text-orange-700"
+              htmlFor="in_progress"
+            >
+              in progress
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-stone-600 p-1">
+            <input
+              id="done"
+              name="status"
+              type="radio"
+              value="done"
+              aria-describedby="status-error"
+              defaultChecked={status === "done"}
+              className="h-4 w-4 shrink-0 cursor-pointer accent-teal-700"
+            />
+            <label
+              className="rounded-full bg-green-200 px-3 py-0.5 text-base sm:text-lg font-semibold text-green-700"
+              htmlFor="done"
+            >
+              done
+            </label>
+          </div>
+        </div>
+
+        <div id="status-error" aria-live="polite">
+          {state?.errors?.status?.map((error) => (
+            <p
+              key={error}
+              className="mt-2 wrap-break-word text-sm text-red-700"
+            >
               {error}
             </p>
           ))}
+        </div>
       </div>
 
-      <Button AddClass="mt-5" button={true} disabeld={isPending}>
-        {isPending ? "Editing Task..." : "Edit Task"}
-      </Button>
+      {/* Submit */}
+      <div className="mt-5 w-full sm:w-auto">
+        <Button AddClass="w-full sm:w-auto" button={true} disabeld={isPending}>
+          {isPending ? "Editing Task..." : "Edit Task"}
+        </Button>
+      </div>
     </form>
   );
 }

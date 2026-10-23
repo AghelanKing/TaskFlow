@@ -7,10 +7,10 @@ function SignOutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/" })}
-      className="flex items-center gap-x-1 bg-teal-50 rounded-xl p-3 font-semibold text-teal-700 hover:bg-teal-600 hover:text-teal-50"
+      className="flex w-full items-center justify-center gap-x-1 rounded-xl mb-10 bg-teal-50 p-2 sm:p-3 text-sm sm:text-base font-semibold text-teal-700 transition-colors hover:bg-teal-600 hover:text-teal-50"
     >
-      <AiOutlinePoweroff className="text-lg" />
-      Sign Out
+      <AiOutlinePoweroff className="shrink-0 text-lg" />
+      <span>Sign Out</span>
     </button>
   );
 }

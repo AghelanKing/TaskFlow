@@ -7,7 +7,6 @@ import bcrypt from "bcryptjs";
 
 async function getUser(email: string) {
   const results = await sql`SELECT * FROM users WHERE email = ${email}`;
-  console.log(results);
   return results[0];
 }
 
@@ -45,4 +44,18 @@ export const {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // موقع لاگین، id رو از user به توکن منتقل کن
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string; // از توکن به session منتقل کن
+      }
+      return session;
+    },
+  },
 });

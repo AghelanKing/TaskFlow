@@ -28,34 +28,37 @@ function SownAllTasks({
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const totalPages = Math.ceil(allTasks.length / ITEMS_PER_PAGE);
 
-  const currentPage = Number(searchParams.get("page")) || 1;
+  const totalPages = Math.ceil(allTasks.length / ITEMS_PER_PAGE);
+  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-
-  const tasks = allTasks.slice(startIndex, endIndex);
+  const tasks = allTasks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className=" mt-1 w-full h-[80%] bg-white p-3 rounded-2xl">
-      <div className="text-teal-900 font-bold flex items-center justify-between bg-[#f3f5f8] p-4 border border-teal-800 rounded-2xl text-lg">
-        <div className="w-[25%] flex justify-center items-center">title</div>
-        <div className="w-[25%] pr-7 flex justify-center items-center">
-          user
-        </div>
-        <div className="w-[20%] flex justify-center items-center">status</div>
-        <div className="w-[20%] flex justify-center items-center">priority</div>
-        <div className="w-[10%] flex justify-center items-center"></div>
+    <div className="mt-2 w-full min-w-0 rounded-2xl bg-white p-2 min-[400px]:p-3 sm:p-4">
+      {/* Desktop table header */}
+      <div className="hidden lg:flex items-center justify-between rounded-2xl border border-teal-800 bg-[#f3f5f8] p-4 text-base xl:text-lg font-bold text-teal-900">
+        <div className="w-[28%] min-w-0 text-center">Title</div>
+        <div className="w-[25%] min-w-0 text-center">User</div>
+        <div className="w-[19%] min-w-0 text-center">Status</div>
+        <div className="w-[18%] min-w-0 text-center">Priority</div>
+        <div className="w-[10%]" />
       </div>
-      <div className="flex mt-2 bg-[#f3f5f8] rounded-xl border border-teal-800 overflow-hidden">
+
+      <div className="mt-2 min-w-0 overflow-hidden rounded-xl border border-teal-800 bg-[#f3f5f8]">
         <ul
-          className={`flex flex-col w-full divide-y divide-teal-800 ${!tasks.length ? "p-5 items-center" : ""}`}
+          className={`flex w-full min-w-0 flex-col divide-y divide-teal-800 ${
+            !tasks.length ? "items-center p-5" : ""
+          }`}
         >
           {!tasks.length && (
-            <p className="text-stone-500 font-semibold italic">No more item!</p>
+            <li className="py-3 text-center text-sm sm:text-base font-semibold italic text-stone-500">
+              No more items!
+            </li>
           )}
-          {tasks?.map((task) => (
+
+          {tasks.map((task) => (
             <TasksItem
               key={task.id}
               task={task}
@@ -67,7 +70,8 @@ function SownAllTasks({
           ))}
         </ul>
       </div>
-      <div>
+
+      <div className="mt-3 min-w-0 overflow-x-auto">
         <Pagination totalPage={totalPages} />
       </div>
     </div>

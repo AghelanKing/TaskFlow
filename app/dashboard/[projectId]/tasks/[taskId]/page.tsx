@@ -2,7 +2,7 @@ import { fetchTaskWithId, getProjectAndUser } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/dashboard/breadcrumbs";
 import Task from "@/app/ui/dashboard/tasks/Task";
 import { auth } from "@/auth";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Task",
@@ -15,8 +15,9 @@ export default async function Page({
 }) {
   const { projectId, taskId } = await params;
 
-  const sesstion = await auth();
-  const userEmail = sesstion?.user?.email;
+  const session = await auth();
+  const userEmail = session?.user?.email;
+
   const { project, user } = await getProjectAndUser(userEmail, projectId);
 
   const task = await fetchTaskWithId(projectId, taskId);
@@ -27,7 +28,7 @@ export default async function Page({
   const isUser = task?.at(0)?.userid === user?.at(0)?.id;
 
   return (
-    <div className="w-full h-full py-8.5 px-9">
+    <div className="w-full min-w-0 px-3 py-5 min-[400px]:px-4 sm:px-6 sm:py-8 lg:px-9">
       <Breadcrumbs
         options={[
           { label: "Tasks", href: `/dashboard/${projectId}/tasks` },
@@ -38,6 +39,7 @@ export default async function Page({
           },
         ]}
       />
+
       <Task
         task={task}
         pathnameEdit={pathnameEdit}

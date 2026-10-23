@@ -16,23 +16,29 @@ function Search({
   const { replace } = useRouter();
 
   const handleSearch = useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
+
     params.set("page", "1");
 
-    if (term) params.set("query", term);
-    else params.delete("query");
+    if (term) {
+      params.set("query", term);
+    } else {
+      params.delete("query");
+    }
 
     replace(`${pathname}?${params.toString()}`);
   }, 500);
+
   return (
-    <div className={`relative ${width}`}>
-      <LuSearch className="absolute top-[52%] left-1.5 text-xl font-bold text-teal-800" />
+    <div className={`relative min-w-0 ${width}`}>
+      <LuSearch className="absolute left-2 top-1/2 text-xl font-bold text-teal-800" />
+
       <input
         type="text"
         placeholder={placeholder}
         defaultValue={searchParams.get("query") || ""}
         onChange={(e) => handleSearch(e.target.value)}
-        className="bg-white py-3 px-8 rounded-xl w-full mt-6 text-teal-800 font-semibold"
+        className="box-border mt-4 sm:mt-6 w-full min-w-0 rounded-xl bg-white py-3 pl-9 pr-3 text-teal-800 font-semibold outline-none focus:ring-2 focus:ring-teal-600"
       />
     </div>
   );

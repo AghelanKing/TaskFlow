@@ -1,9 +1,9 @@
 "use client";
+
 import { generatePagination } from "@/app/lib/utils";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { FaArrowLeftLong } from "react-icons/fa6";
-import { FaArrowRightLong } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 function Pagination({ totalPage }: { totalPage: number }) {
   const pathname = usePathname();
@@ -15,37 +15,41 @@ function Pagination({ totalPage }: { totalPage: number }) {
 
     if (pageNumber) params.set("page", pageNumber.toString());
     else params.set("page", "1");
+
     return `${pathname}?${params.toString()}`;
   }
 
   const allPages = generatePagination(currentPage, totalPage);
+
   return (
-    <div className="flex items-center justify-center mt-5">
-      <div className="border-teal-800 p-1 border flex items-center rounded-xl">
+    <div className="mt-5 flex w-full min-w-0 items-center justify-center">
+      <div className="flex max-w-full min-w-0 items-center rounded-xl border border-teal-800 p-1">
         <ArrowPagination
           direction="left"
           href={createPageUrl(currentPage - 1)}
           isDisabeld={currentPage <= 1}
         />
 
-        {allPages.map((page, index) => {
-          let position: "first" | "last" | "single" | "middle" | undefined;
+        <div className="flex min-w-0 items-center">
+          {allPages.map((page, index) => {
+            let position: "first" | "last" | "single" | "middle" | undefined;
 
-          if (index === 0) position = "first";
-          if (index === allPages.length - 1) position = "last";
-          if (allPages.length === 1) position = "single";
-          if (page === "...") position = "middle";
+            if (index === 0) position = "first";
+            if (index === allPages.length - 1) position = "last";
+            if (allPages.length === 1) position = "single";
+            if (page === "...") position = "middle";
 
-          return (
-            <PaginationNumber
-              key={`${page}-${index}`}
-              position={position}
-              href={createPageUrl(page)}
-              page={page}
-              isActive={currentPage === page}
-            />
-          );
-        })}
+            return (
+              <PaginationNumber
+                key={`${page}-${index}`}
+                position={position}
+                href={createPageUrl(page)}
+                page={page}
+                isActive={currentPage === page}
+              />
+            );
+          })}
+        </div>
 
         <ArrowPagination
           direction="right"
@@ -56,6 +60,7 @@ function Pagination({ totalPage }: { totalPage: number }) {
     </div>
   );
 }
+
 function PaginationNumber({
   position,
   href,
@@ -76,17 +81,18 @@ function PaginationNumber({
   const middle = position === "middle" ? "text-stone-400" : "";
   const isActiveClassName = isActive ? "bg-teal-800 text-white" : "";
 
-  const className = `py-2.5 px-4 hover:bg-teal-700 hover:text-teal-50 bg-teal-50 text-teal-800 border border-teal-800 ${first} ${last} ${middle} ${isActiveClassName}`;
-  return (
-    <>
-      {page === "..." ? (
-        <span className={className}>{page}</span>
-      ) : (
-        <Link className={className} href={href}>
-          {page}
-        </Link>
-      )}
-    </>
+  const className = `flex min-w-0 items-center justify-center border border-teal-800 bg-teal-50 px-2.5 py-2 text-sm text-teal-800 hover:bg-teal-700 hover:text-teal-50 min-[400px]:px-3 sm:px-4 sm:py-2.5 sm:text-base ${first} ${last} ${middle} ${isActiveClassName}`;
+
+  return page === "..." ? (
+    <span className={className}>{page}</span>
+  ) : (
+    <Link
+      className={className}
+      href={href}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {page}
+    </Link>
   );
 }
 
@@ -106,12 +112,20 @@ function ArrowPagination({
     ? "text-stone-400! border-stone-400! bg-white! cursor-not-allowed"
     : "";
 
-  const className = `bg-teal-50 text-teal-700 hover:bg-teal-700 hover:text-teal-50 border border-teal-800 rounded-xl p-3 text-xl ${disabeld} ${direction === "left" ? "mr-2" : "ml-2"}`;
+  const className = `flex shrink-0 items-center justify-center rounded-xl border border-teal-800 bg-teal-50 p-2.5 text-lg text-teal-700 hover:bg-teal-700 hover:text-teal-50 sm:p-3 sm:text-xl ${disabeld} ${
+    direction === "left" ? "mr-1.5 sm:mr-2" : "ml-1.5 sm:ml-2"
+  }`;
 
   return isDisabeld ? (
-    <span className={className}>{icon}</span>
+    <span className={className} aria-disabled="true">
+      {icon}
+    </span>
   ) : (
-    <Link className={className} href={href}>
+    <Link
+      className={className}
+      href={href}
+      aria-label={direction === "left" ? "Previous page" : "Next page"}
+    >
       {icon}
     </Link>
   );

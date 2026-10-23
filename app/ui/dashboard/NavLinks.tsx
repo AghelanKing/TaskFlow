@@ -6,8 +6,10 @@ import { FaTasks } from "react-icons/fa";
 import { LuUserRoundCog } from "react-icons/lu";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { usePathname } from "next/navigation";
+
 function NavLinks({ projectId }: { projectId?: string | null }) {
   const pathname = usePathname();
+
   const urls = [
     {
       label: "Home",
@@ -30,19 +32,26 @@ function NavLinks({ projectId }: { projectId?: string | null }) {
       icon: HiOutlineUsers,
     },
   ];
+
   return (
-    <div>
-      <div className="flex flex-col gap-y-3">
+    <div className="w-full min-w-0">
+      <div className="grid grid-cols-4 gap-1.5 lg:flex lg:flex-col lg:gap-y-3">
         {urls.map((url) => {
           const LinkIcon = url.icon;
+          const isActive = pathname === url.href;
+
           return (
             <Link
-              className={`flex items-center gap-x-1 bg-teal-50 rounded-xl p-3 font-semibold text-teal-700 hover:bg-teal-600 hover:text-teal-50 ${pathname === url.href ? "bg-teal-600 text-white" : ""}`}
+              className={`min-w-0 flex flex-col sm:flex-row lg:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-x-2 bg-teal-50 rounded-xl p-2 sm:p-3 font-semibold text-teal-700 hover:bg-teal-600 hover:text-teal-50 ${
+                isActive ? "bg-teal-600 text-white" : ""
+              }`}
               key={url.href}
               href={url.href}
             >
-              <LinkIcon className="text-lg font-semibold" />
-              {url.label}
+              <LinkIcon className="text-lg shrink-0" />
+              <span className="text-xs sm:text-sm lg:text-base truncate">
+                {url.label}
+              </span>
             </Link>
           );
         })}

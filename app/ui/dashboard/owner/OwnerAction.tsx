@@ -14,20 +14,21 @@ function OwnerAction({
   isOwner: boolean;
 }) {
   return (
-    <div className="flex gap-x-3 items-center">
+    <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center min-w-0">
       <ButttonsTask
         href={pathnameEdit}
-        AddClass="flex items-center gap-x-1 font-semibold text-base! rounded-xl!"
+        AddClass="flex w-full sm:w-auto items-center justify-center gap-x-1 font-semibold text-base! rounded-xl!"
       >
-        <HiOutlinePencilSquare className="text-xl" />
+        <HiOutlinePencilSquare className="text-xl shrink-0" />
         Edit Project
       </ButttonsTask>
+
       <ButttonsTask
         onClick={() => deleteProject(projectId, isOwner)}
         deleteTask={true}
-        AddClass="flex items-center gap-x-1 font-semibold text-base! rounded-xl!"
+        AddClass="flex w-full sm:w-auto items-center justify-center gap-x-1 font-semibold text-base! rounded-xl!"
       >
-        <HiOutlineTrash className="text-xl" />
+        <HiOutlineTrash className="text-xl shrink-0" />
         Delete Project
       </ButttonsTask>
     </div>

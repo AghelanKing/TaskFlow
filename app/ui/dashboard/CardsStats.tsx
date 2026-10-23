@@ -1,7 +1,6 @@
 import { HiOutlineUsers } from "react-icons/hi2";
 import { GrTasks } from "react-icons/gr";
-import { TbProgressCheck } from "react-icons/tb";
-import { TbCalendarDue } from "react-icons/tb";
+import { TbProgressCheck, TbCalendarDue } from "react-icons/tb";
 import { IconType } from "react-icons";
 
 type Value = {
@@ -17,7 +16,7 @@ export default function CardsStats({
   cardsValue: Value | undefined;
 }) {
   return (
-    <div className="mt-7 bg-stone-50 w-full flex items-center justify-between h-[30%] rounded-2xl">
+    <div className="mt-7 bg-stone-50 w-full grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 p-2 sm:p-3 rounded-2xl">
       <CardStats
         label="Total users"
         value={cardsValue?.totalUsers}
@@ -63,7 +62,7 @@ const icons: Record<CardColor, IconType> = {
   overdue: TbCalendarDue,
 };
 
-type CardColor = keyof typeof colors; // 👈 اضافه شد
+type CardColor = keyof typeof colors;
 
 function CardStats({
   label,
@@ -77,13 +76,18 @@ function CardStats({
   const Icon = icons[color];
 
   return (
-    <div className={`h-[90%] w-1/4 mx-2 p-2 rounded-lg ${colors[color]}`}>
-      <h4 className="font-semibold flex items-center gap-x-2">
-        <Icon className={`text-3xl p-1 rounded-lg ${colorsSpan[color]}`} />
-        {label}
+    <div
+      className={`min-w-0 min-h-28 sm:min-h-32 lg:h-36 p-2 sm:p-3 rounded-lg ${colors[color]}`}
+    >
+      <h4 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+        <Icon
+          className={`text-3xl shrink-0 p-1 rounded-lg ${colorsSpan[color]}`}
+        />
+        <span className="min-w-0 wrap-break-words">{label}</span>
       </h4>
+
       <span
-        className={`mt-2 w-full h-[76%] flex items-center justify-center rounded-lg font-semibold text-2xl ${colorsSpan[color]}`}
+        className={`mt-2 w-full min-h-12 sm:min-h-14 flex items-center justify-center rounded-lg font-semibold text-xl sm:text-2xl ${colorsSpan[color]}`}
       >
         {value}
       </span>

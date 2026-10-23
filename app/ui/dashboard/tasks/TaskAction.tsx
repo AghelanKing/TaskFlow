@@ -18,14 +18,14 @@ function TaskAction({
   isUser: boolean;
 }) {
   return (
-    <div className="mt-5 flex gap-x-3 items-center">
+    <div className="mt-5 flex min-w-0 flex-wrap items-center gap-2 sm:gap-x-3">
       {(isOwner || isUser) && (
         <ButttonsTask
           href={pathnameEdit}
-          AddClass="flex items-center gap-x-1 font-semibold text-base! rounded-lg!"
+          AddClass="flex items-center justify-center gap-x-1 rounded-lg! text-sm min-[400px]:text-base! font-semibold"
         >
-          <HiOutlinePencilSquare className="text-xl" />
-          Edit task
+          <HiOutlinePencilSquare className="shrink-0 text-xl" />
+          <span>Edit task</span>
         </ButttonsTask>
       )}
 
@@ -33,10 +33,10 @@ function TaskAction({
         <ButttonsTask
           onClick={() => deleteTask(projectId, taskId)}
           deleteTask={true}
-          AddClass="flex items-center gap-x-1 font-semibold text-base! rounded-lg!"
+          AddClass="flex items-center justify-center gap-x-1 rounded-lg! text-sm min-[400px]:text-base! font-semibold"
         >
-          <HiOutlineTrash className="text-xl" />
-          Delete Task
+          <HiOutlineTrash className="shrink-0 text-xl" />
+          <span>Delete Task</span>
         </ButttonsTask>
       )}
     </div>

@@ -30,30 +30,58 @@ function TasksItem({
   const isUser = taskUser.some((member) => task.userid === member.userid);
 
   return (
-    <li className="flex items-center hover:bg-teal-100">
+    <li className="flex min-w-0 flex-col hover:bg-teal-100 lg:flex-row lg:items-center">
       <Link
         href={`/dashboard/${projectId}/tasks/${task.id}`}
-        className="flex gap-x-4 justify-between py-5 px-3 items-center flex-1 cursor-pointer"
+        className="flex min-w-0 flex-1 flex-col gap-3 p-3 min-[400px]:p-4 lg:flex-row lg:items-center lg:gap-0 lg:py-5 lg:px-3"
       >
-        <div className="w-[26%] pl-12 font-semibold text-teal-800">
+        {/* Mobile layout */}
+        <div className="flex min-w-0 flex-col gap-2 lg:hidden">
+          <span className="wrap-break-words font-semibold text-teal-800">
+            {task.title}
+          </span>
+
+          <span className="wrap-break-words text-sm text-stone-600">
+            {task.username}
+          </span>
+
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 pt-1">
+            <div className="min-w-0">
+              <Status status={task.status} />
+            </div>
+
+            <div className="min-w-0">
+              <Priority priority={task.priority} />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop layout */}
+        <div className="hidden min-w-0 w-[28%] truncate pl-2 font-semibold text-teal-800 lg:block">
           {task.title}
         </div>
-        <div className="w-[25%] pl-20 text-sm">{task.username}</div>
-        <div className="w-[20%] pl-15">
+
+        <div className="hidden min-w-0 w-[25%] truncate px-2 text-sm lg:block">
+          {task.username}
+        </div>
+
+        <div className="hidden min-w-0 w-[19%] px-2 lg:block">
           <Status status={task.status} />
         </div>
-        <div className="w-[20%] pl-15">
+
+        <div className="hidden min-w-0 w-[18%] px-2 lg:block">
           <Priority priority={task.priority} />
         </div>
       </Link>
 
-      {/* حالا این بیرون از <Link> اصلیه، نه داخلش */}
-      <div className="w-[10%] pl-2 flex items-center gap-x-2 pr-3">
+      {/* Actions stay outside the task link */}
+      <div className="flex items-center justify-end gap-2 border-t border-teal-800/20 px-3 py-2 lg:w-[10%] lg:shrink-0 lg:justify-center lg:border-0 lg:py-0 lg:pr-3">
         {(isOwner || isUser) && (
           <ButttonsTask href={pathnameEdit}>
             <HiOutlinePencilSquare />
           </ButttonsTask>
         )}
+
         {isOwner && (
           <ButttonsTask
             onClick={() => deleteTask(projectId, task.id)}

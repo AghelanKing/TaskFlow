@@ -9,44 +9,78 @@ export type LatestTask = {
 };
 
 function LatestTasks({ tasks }: { tasks: LatestTask[] | undefined }) {
+  const columns =
+    "grid grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center";
+
   return (
-    <div className="w-[50%] h-100 bg-white p-3 rounded-2xl">
-      <div className="text-teal-900 font-bold flex items-center justify-between bg-[#f3f5f8] p-4 border border-teal-800 rounded-2xl text-lg">
-        <div className="w-[25%] flex  items-center">title</div>
-        <div className="w-[25%] pr-7 flex  items-center">user</div>
-        <div className="w-[20%] flex  items-center">status</div>
+    <div className="w-full lg:w-1/2 min-w-0 min-h-100 bg-white p-2 sm:p-3 rounded-2xl">
+      {/* Desktop table header */}
+      <div
+        className={`${columns} hidden sm:grid text-teal-900 font-bold bg-[#f3f5f8] p-3 lg:p-4 border border-teal-800 rounded-2xl text-sm lg:text-lg`}
+      >
+        <div className="min-w-0">title</div>
+        <div className="min-w-0">user</div>
+        <div className="min-w-0">status</div>
       </div>
-      <div className="flex mt-2 bg-[#f3f5f8] rounded-xl border border-teal-800 overflow-hidden">
+
+      {/* Tasks list */}
+      <div className="mt-2 bg-[#f3f5f8] rounded-xl border border-teal-800 overflow-hidden">
         <ul
-          className={`flex flex-col w-full divide-y divide-teal-800 ${!tasks?.length ? "p-5 items-center" : ""}`}
+          className={`flex flex-col w-full min-w-0 divide-y divide-teal-800 ${
+            !tasks?.length ? "p-5 items-center" : ""
+          }`}
         >
           {!tasks?.length && (
-            <p className="text-stone-500 font-semibold italic">No more item!</p>
+            <li className="text-stone-500 font-semibold italic text-sm sm:text-base text-center">
+              No more item!
+            </li>
           )}
+
           {tasks?.map((task) => (
-            <TasksItem key={task.id} task={task} />
+            <TasksItem key={task.id} task={task} columns={columns} />
           ))}
         </ul>
       </div>
-      <div></div>
     </div>
   );
 }
 
-function TasksItem({ task }: { task: LatestTask }) {
+function TasksItem({ task, columns }: { task: LatestTask; columns: string }) {
   return (
-    <li className="flex gap-x-4 items-center p-2">
-      {/* className="flex gap-x-4 justify-between py-5 px-3 items-center flex-1 cursor-pointer" */}
-      <div className="w-[26%] ml-2 font-semibold text-teal-800 text-sm">
-        {task.title}
+    <li className="min-w-0 hover:bg-teal-100">
+      {/* Mobile card */}
+      <div className="flex sm:hidden flex-col gap-3 p-3 min-[400px]:p-4">
+        <div className="min-w-0">
+          <p className="text-xs text-stone-500 mb-1">Title</p>
+          <p className="font-semibold text-teal-800 text-sm wrap-break-word">
+            {task.title}
+          </p>
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-xs text-stone-500 mb-1">User</p>
+          <p className="text-sm font-medium wrap-break-word">{task.username}</p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="text-xs text-stone-500">Status</span>
+          <Status status={task.status} />
+        </div>
       </div>
-      <div
-        className={`w-[25%] ml-13 mr-11 text-xs font-medium ${task.status === "in_progress" ? "mr-2!" : ""}`}
-      >
-        {task.username}
-      </div>
-      <div className="w-[26%]">
-        <Status status={task.status} />
+
+      {/* Desktop table row */}
+      <div className={`${columns} hidden sm:grid p-3 lg:p-4`}>
+        <div className="min-w-0 font-semibold text-teal-800 text-sm wrap-break-word">
+          {task.title}
+        </div>
+
+        <div className="min-w-0 text-sm font-medium wrap-break-word">
+          {task.username}
+        </div>
+
+        <div className="min-w-0">
+          <Status status={task.status} />
+        </div>
       </div>
     </li>
   );
