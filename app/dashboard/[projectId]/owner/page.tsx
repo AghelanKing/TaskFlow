@@ -20,14 +20,12 @@ export default async function Page({
   const { project, user } = await getProjectAndUser(userEmail, projectId);
   const users = await fetchProjectMembers(projectId);
 
-  const usersFiltered = users.filter(
-    (user) => user.id !== project?.at(0)?.owner_id,
-  );
+  const usersFiltered = users.filter((user) => user.id !== project?.owner_id);
 
-  const projectName = project?.at(0)?.name;
-  const projectDescription = project?.at(0)?.description;
+  const projectName = project?.name;
+  const projectDescription = project?.description;
 
-  const isOwner = project?.at(0)?.owner_id === user?.at(0)?.id;
+  const isOwner = project?.owner_id === user?.at(0)?.id;
 
   return isOwner ? (
     <div className="w-full min-w-0 h-full px-3 py-5 min-[400px]:px-4 sm:px-6 sm:py-8 lg:px-9">
@@ -66,7 +64,7 @@ export default async function Page({
         <OwnershipSelect
           users={usersFiltered}
           projectId={projectId}
-          userIdPrevious={project?.at(0)?.owner_id}
+          userIdPrevious={project?.owner_id}
           isOwner={isOwner}
         />
       </div>

@@ -5,8 +5,8 @@ import Button from "../Button";
 import { useActionState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 
-function CreateForm({ ownerId }: { ownerId: string }) {
-  const createProjectWithId = createProject.bind(null, ownerId);
+function CreateForm({ ownerId }: { ownerId?: string }) {
+  const createProjectWithId = createProject.bind(null, ownerId as string);
   const initialState: State = { message: null, errors: {} };
 
   const [state, formAction, isPending] = useActionState(

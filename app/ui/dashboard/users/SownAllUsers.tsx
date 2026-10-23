@@ -19,7 +19,7 @@ function SownAllUsers({
 }: {
   allUsers: User[];
   userId: string | undefined;
-  ownerId: string;
+  ownerId?: string;
   isOwner: boolean;
   projectId: string;
 }) {
@@ -67,7 +67,7 @@ function SownAllUsers({
                   isOwner={isOwner}
                   isUser={isUser}
                   projectId={projectId}
-                  ownerId={ownerId}
+                  ownerId={ownerId as string}
                 />
               );
             })}

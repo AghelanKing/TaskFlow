@@ -5,8 +5,8 @@ import Button from "../Button";
 import { useActionState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 
-function GoToProjectForm({ userId }: { userId: string }) {
-  const goToProjectWithId = goToProject.bind(null, userId);
+function GoToProjectForm({ userId }: { userId?: string }) {
+  const goToProjectWithId = goToProject.bind(null, userId as string);
   const initialState: StateGo = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(
     goToProjectWithId,

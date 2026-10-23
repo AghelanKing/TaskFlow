@@ -19,13 +19,13 @@ function OwnershipSelect({
   users: User[];
   projectId: string;
   isOwner: boolean;
-  userIdPrevious: string;
+  userIdPrevious?: string;
 }) {
   const TranferOwnerShipWithId = ownerShip.bind(
     null,
     projectId,
     isOwner,
-    userIdPrevious,
+    userIdPrevious as string,
   );
 
   const initialState: StateOwner = { message: null, errors: {} };

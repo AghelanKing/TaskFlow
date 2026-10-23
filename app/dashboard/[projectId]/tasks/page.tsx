@@ -25,7 +25,7 @@ export default async function Page({
 
   const { project, user } = await getProjectAndUser(userEmail, projectId);
 
-  const isOwner = project?.at(0)?.owner_id === user?.at(0)?.id;
+  const isOwner = project?.owner_id === user?.at(0)?.id;
 
   const allTasks = await fetchAllTasks(projectId, query);
 

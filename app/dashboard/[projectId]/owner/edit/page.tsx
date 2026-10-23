@@ -17,8 +17,14 @@ export default async function Page({
   const sesstion = await auth();
   const userEmail = sesstion?.user?.email;
   const { user } = await getProjectAndUser(userEmail, projectId);
+
   const project = await fetchProject(projectId);
-  const isOwner = project?.at(0)?.owner_id === user?.at(0)?.id;
+
+  if (!project) {
+    return <div className="p-6">Project not found.</div>;
+  }
+
+  const isOwner = project?.owner_id === user?.at(0)?.id;
 
   return (
     <div className="w-full h-full py-6 px-9">
@@ -35,10 +41,11 @@ export default async function Page({
           },
         ]}
       />
+
       <EditProject
         projectId={projectId}
         isOwner={isOwner}
-        projectObj={project?.at(0)}
+        projectObj={project}
       />
     </div>
   );

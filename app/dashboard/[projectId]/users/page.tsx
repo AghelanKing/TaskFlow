@@ -24,7 +24,7 @@ export default async function Page({
   const { project, user } = await getProjectAndUser(userEmail, projectId);
 
   const users = await fetchUsers(projectId, query);
-  const isOwner = project?.at(0)?.owner_id === user?.at(0)?.id;
+  const isOwner = project?.owner_id === user?.at(0)?.id;
 
   return (
     <div className="w-full min-w-0 h-full px-3 py-5 min-[400px]:px-4 sm:px-6 sm:py-8 lg:px-9">
@@ -38,7 +38,7 @@ export default async function Page({
         <SownAllUsers
           allUsers={users}
           isOwner={isOwner}
-          ownerId={project?.at(0)?.owner_id}
+          ownerId={project?.owner_id}
           userId={user?.at(0)?.id}
           projectId={projectId}
         />

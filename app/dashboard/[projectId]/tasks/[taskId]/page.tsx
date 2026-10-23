@@ -24,7 +24,7 @@ export default async function Page({
 
   const pathnameEdit = `/dashboard/${projectId}/tasks/${taskId}/edit`;
 
-  const isOwner = project?.at(0)?.owner_id === user?.at(0)?.id;
+  const isOwner = project?.owner_id === user?.at(0)?.id;
   const isUser = task?.at(0)?.userid === user?.at(0)?.id;
 
   return (

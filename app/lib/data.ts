@@ -1,4 +1,5 @@
 import { LatestTask } from "../ui/dashboard/LatestTasks";
+import { Project } from "../ui/dashboard/owner/EditProject";
 import { TaskWithId } from "../ui/dashboard/tasks/EditTask";
 import { Task } from "../ui/dashboard/tasks/TasksItem";
 import { sql } from "./db";
@@ -29,19 +30,23 @@ export async function fetchProjectMembers(projectId: string) {
   }
 }
 
-export async function fetchProject(projectId: string) {
+export async function fetchProject(projectId: string): Promise<Project | null> {
   try {
-    const project = await sql`
-    SELECT 
-    id,
-    name,
-    description,
-    owner_id
-    FROM projects WHERE id = ${projectId}`;
-    return project;
+    const project = await sql<Project[]>`
+      SELECT
+        id,
+        name,
+        description,
+        owner_id
+      FROM projects
+      WHERE id = ${projectId}
+      LIMIT 1
+    `;
+
+    return project[0] ?? null;
   } catch (error) {
-    console.log("Database error: ", error);
-    throw new Error("Error retrieving projects information");
+    console.error("Database error:", error);
+    throw new Error("Error retrieving project information");
   }
 }
 
